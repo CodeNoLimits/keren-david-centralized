@@ -266,7 +266,7 @@ export default function Home() {
                    currentLanguage === 'es' ? 'Experiencia de Vida Especial' :
                    currentLanguage === 'ru' ? 'Особый Жизненный Опыт' : 'חווית חיים מיוחדת'}
                 </h5>
-                <p style={{color: 'hsl(210, 12%, 55%)', fontSize: '0.9rem'}}>
+                <p style={{color: 'hsl(210, 12%, 35%)', fontSize: '0.9rem', fontWeight: '500'}}>
                   {currentLanguage === 'he' ? 'טיסה ישירה לאומן הכוללת ביקור במקום הקדוש של רבי נחמן מברסלב.' :
                    currentLanguage === 'en' ? 'Direct flight to Uman including visit to the holy place of Rabbi Nachman of Breslov.' :
                    currentLanguage === 'fr' ? 'Vol direct vers Uman incluant une visite du lieu saint de Rabbi Nachman de Breslov.' :
@@ -284,7 +284,7 @@ export default function Home() {
                    currentLanguage === 'es' ? 'Libros Especiales e Impresionantes de Rabbenu' :
                    currentLanguage === 'ru' ? 'Особые и Впечатляющие Книги Раббену' : 'ספרי רבנו מיוחדים ומרשימים'}
                 </h5>
-                <p style={{color: 'hsl(210, 12%, 55%)', fontSize: '0.9rem'}}>
+                <p style={{color: 'hsl(210, 12%, 35%)', fontSize: '0.9rem', fontWeight: '500'}}>
                   {currentLanguage === 'he' ? 'אפשרות לזכות ספרי רבינו מעור אומנותי במיוחד' :
                    currentLanguage === 'en' ? 'Opportunity to win specially crafted artistic leather Rabbenu books' :
                    currentLanguage === 'fr' ? 'Opportunité de gagner des livres de Rabbenu en cuir artistique spécialement conçus' :
@@ -302,7 +302,7 @@ export default function Home() {
                    currentLanguage === 'es' ? 'Simple y Fácil' :
                    currentLanguage === 'ru' ? 'Просто и Легко' : 'פשוט וקל'}
                 </h5>
-                <p style={{color: 'hsl(210, 12%, 55%)', fontSize: '0.9rem'}}>
+                <p style={{color: 'hsl(210, 12%, 35%)', fontSize: '0.9rem', fontWeight: '500'}}>
                   {currentLanguage === 'he' ? 'רכישה פשוטה בסכום סמלי של 35 שקלים ומעלה באתר.' :
                    currentLanguage === 'en' ? 'Simple purchase for a symbolic amount of 35 shekels and up on the site.' :
                    currentLanguage === 'fr' ? 'Achat simple pour un montant symbolique de 35 shekels et plus sur le site.' :
@@ -320,7 +320,7 @@ export default function Home() {
                    currentLanguage === 'es' ? 'Oportunidad Única' :
                    currentLanguage === 'ru' ? 'Единственная Возможность' : 'הזדמנות חד פעמית'}
                 </h5>
-                <p style={{color: 'hsl(210, 12%, 55%)', fontSize: '0.9rem'}}>
+                <p style={{color: 'hsl(210, 12%, 35%)', fontSize: '0.9rem', fontWeight: '500'}}>
                   {currentLanguage === 'he' ? 'פרס מדהים שמגיע ישר לידיכם.' :
                    currentLanguage === 'en' ? 'Amazing prize that comes straight to your hands.' :
                    currentLanguage === 'fr' ? 'Prix incroyable qui arrive directement entre vos mains.' :
@@ -466,7 +466,7 @@ export default function Home() {
                  currentLanguage === 'es' ? 'Entrega Rápida Gratuita a Domicilio' :
                  currentLanguage === 'ru' ? 'Быстрая Бесплатная Доставка на Дом' : 'משלוח מהיר עד הבית חינם'}
               </h3>
-              <p style={{color: 'hsl(210, 12%, 55%)', fontSize: '0.9rem'}}>
+              <p style={{color: 'hsl(210, 12%, 35%)', fontSize: '0.9rem', fontWeight: '500'}}>
                 {currentLanguage === 'he' ? 'ברכישה מעל 299 ₪ מהחנות' :
                  currentLanguage === 'en' ? 'On purchases over 299 ₪ from the store' :
                  currentLanguage === 'fr' ? 'Sur les achats de plus de 299 ₪ du magasin' :
@@ -484,7 +484,7 @@ export default function Home() {
                  currentLanguage === 'es' ? 'Compra Segura' :
                  currentLanguage === 'ru' ? 'Безопасная Покупка' : 'רכישה מאובטחת'}
               </h3>
-              <p style={{color: 'hsl(210, 12%, 55%)', fontSize: '0.9rem'}}>
+              <p style={{color: 'hsl(210, 12%, 35%)', fontSize: '0.9rem', fontWeight: '500'}}>
                 {currentLanguage === 'he' ? 'באמצעות תעודת SSL ובתקנים המחמירים ביותר' :
                  currentLanguage === 'en' ? 'Using SSL certificate and the most stringent standards' :
                  currentLanguage === 'fr' ? 'En utilisant un certificat SSL et les normes les plus strictes' :
@@ -502,7 +502,7 @@ export default function Home() {
                  currentLanguage === 'es' ? 'Librería en Línea Más Grande para los Libros de Nuestro Maestro' :
                  currentLanguage === 'ru' ? 'Крупнейший Интернет-Книжный Магазин Книг Нашего Учителя' : 'חנות הספרים הגדולה ביותר לספרי רבנו אונליין'}
               </h3>
-              <p style={{color: 'hsl(210, 12%, 55%)', fontSize: '0.9rem'}}>
+              <p style={{color: 'hsl(210, 12%, 35%)', fontSize: '0.9rem', fontWeight: '500'}}>
                 {currentLanguage === 'he' ? 'משלוחים לכל הארץ' :
                  currentLanguage === 'en' ? 'Shipping throughout the country' :
                  currentLanguage === 'fr' ? 'Expédition dans tout le pays' :
@@ -520,7 +520,7 @@ export default function Home() {
                  currentLanguage === 'es' ? 'Excelente Servicio al Cliente Siempre Disponible' :
                  currentLanguage === 'ru' ? 'Отличное Обслуживание Клиентов Всегда Доступно' : 'שירות לקוחות מעולה וזמין תמיד לשירותכם'}
               </h3>
-              <p style={{color: 'hsl(210, 12%, 55%)', fontSize: '0.9rem'}}>
+              <p style={{color: 'hsl(210, 12%, 35%)', fontSize: '0.9rem', fontWeight: '500'}}>
                 {currentLanguage === 'he' ? 'עד 12 תשלומים ללא ריבית' :
                  currentLanguage === 'en' ? 'Up to 12 payments without interest' :
                  currentLanguage === 'fr' ? 'Jusqu\'à 12 paiements sans intérêt' :

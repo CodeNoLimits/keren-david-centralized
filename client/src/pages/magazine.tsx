@@ -390,7 +390,7 @@ export default function Magazine() {
                       <img 
                         src={article.image} 
                         alt={article.title}
-                        className="w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity duration-500"
+                        className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-500"
                       />
                     )}
                     {/* Gradient Overlay */}
@@ -411,14 +411,14 @@ export default function Magazine() {
                     </div>
                   </div>
                   <CardContent className="p-6">
-                    <p className="text-gray-600 mb-4 line-clamp-3 text-sm leading-relaxed">{article.excerpt}</p>
+                    <p className="text-gray-700 dark:text-gray-300 mb-4 line-clamp-3 text-sm leading-relaxed font-medium">{article.excerpt}</p>
 
                     {/* Member Photos - Community Articles */}
                     {article.memberPhotos && article.memberPhotos.length > 0 && (
                       <div className="mb-4">
                         <div className="flex items-center gap-2 mb-3">
                           <Users className="w-4 h-4 text-[#f97316]" />
-                          <span className="text-sm font-semibold text-gray-700">
+                          <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
                             {currentLanguage === 'he' ? 'חברי הקהילה' :
                              currentLanguage === 'en' ? 'Community Members' :
                              currentLanguage === 'fr' ? 'Membres de la communauté' :
@@ -507,7 +507,7 @@ export default function Magazine() {
                   <h3 className="text-lg font-bold mb-2 text-gray-900 line-clamp-2 group-hover:text-[#1e40af] transition-colors">
                     {article.title}
                   </h3>
-                  <p className="text-gray-600 mb-4 text-sm line-clamp-3 leading-relaxed">{article.excerpt}</p>
+                  <p className="text-gray-700 dark:text-gray-300 mb-4 text-sm line-clamp-3 leading-relaxed font-medium">{article.excerpt}</p>
 
                   {/* Member Photos - Community Articles */}
                   {article.memberPhotos && article.memberPhotos.length > 0 && (
