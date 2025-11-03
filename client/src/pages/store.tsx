@@ -716,7 +716,196 @@ export default function Store() {
                           className="pl-10 text-sm bg-white/90 border-2 border-[#f97316]"
                         />
                       </div>
-                      {/* Mobile filters will reuse same structure - simplified for now */}
+                      
+                      {/* Mobile filters - Tous les filtres du desktop */}
+                      
+                      {/* Price Filter Mobile */}
+                      <div className="bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] border-2 border-[#f97316] rounded-lg p-4 shadow-lg">
+                        <div 
+                          className="flex items-center justify-between cursor-pointer mb-3"
+                          onClick={() => toggleSection('price')}
+                          role="button"
+                          aria-expanded={expandedSections.price}
+                        >
+                          <span className="text-sm font-bold text-white">{t('priceRange')}</span>
+                          {expandedSections.price ? <ChevronUp className="h-4 w-4 text-[#f97316]" /> : <ChevronDown className="h-4 w-4 text-[#f97316]" />}
+                        </div>
+                        {expandedSections.price && (
+                          <div className="space-y-3">
+                            <Slider
+                              min={filterOptions.priceRange[0]}
+                              max={filterOptions.priceRange[1]}
+                              value={filters.priceRange}
+                              onValueChange={(value) => setFilters(prev => ({ ...prev, priceRange: value as [number, number] }))}
+                              className="w-full"
+                            />
+                            <div className="flex justify-between text-xs text-white/90">
+                              <span>{filters.priceRange[0]} ₪</span>
+                              <span>{filters.priceRange[1]} ₪</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Authors Filter Mobile */}
+                      <div className="bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] border-2 border-[#f97316] rounded-lg p-4 shadow-lg">
+                        <div 
+                          className="flex items-center justify-between cursor-pointer mb-3"
+                          onClick={() => toggleSection('authors')}
+                          role="button"
+                          aria-expanded={expandedSections.authors}
+                        >
+                          <span className="text-sm font-bold text-white">{t('authors')}</span>
+                          {expandedSections.authors ? <ChevronUp className="h-4 w-4 text-[#f97316]" /> : <ChevronDown className="h-4 w-4 text-[#f97316]" />}
+                        </div>
+                        {expandedSections.authors && (
+                          <div className="space-y-3 max-h-60 overflow-y-auto">
+                            {Object.entries(filterOptions.authorGroups).map(([groupName, authors]) => (
+                              authors.length > 0 && (
+                                <div key={groupName} className="bg-white/10 rounded p-2">
+                                  <div className="text-xs font-semibold text-[#f97316] mb-2">{groupName}</div>
+                                  <div className="space-y-1">
+                                    {authors.slice(0, 5).map((author) => (
+                                      <div key={author} className="flex items-center space-x-2 rtl:space-x-reverse">
+                                        <Checkbox
+                                          id={`mobile-author-${author}`}
+                                          checked={filters.authors.includes(author)}
+                                          onCheckedChange={() => toggleFilter('authors', author)}
+                                          className="border-orange-400 text-[#f97316]"
+                                        />
+                                        <label htmlFor={`mobile-author-${author}`} className="text-xs cursor-pointer text-white font-medium">
+                                          {author}
+                                        </label>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Languages Filter Mobile */}
+                      <div className="bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] border-2 border-[#f97316] rounded-lg p-4 shadow-lg">
+                        <div 
+                          className="flex items-center justify-between cursor-pointer mb-3"
+                          onClick={() => toggleSection('languages')}
+                          role="button"
+                          aria-expanded={expandedSections.languages}
+                        >
+                          <span className="text-sm font-bold text-white">{t('languages')}</span>
+                          {expandedSections.languages ? <ChevronUp className="h-4 w-4 text-[#f97316]" /> : <ChevronDown className="h-4 w-4 text-[#f97316]" />}
+                        </div>
+                        {expandedSections.languages && (
+                          <div className="space-y-2 max-h-48 overflow-y-auto">
+                            {[
+                              { key: 'עברית', display: t('hebrew') },
+                              { key: 'Français', display: t('french') },
+                              { key: 'English', display: t('english') }
+                            ].map(({ key, display }) => (
+                              <div key={key} className="flex items-center space-x-2 rtl:space-x-reverse bg-white/10 rounded p-2">
+                                <Checkbox
+                                  id={`mobile-language-${key}`}
+                                  checked={filters.languages.includes(key)}
+                                  onCheckedChange={() => toggleFilter('languages', key)}
+                                  className="border-orange-400 text-[#f97316]"
+                                />
+                                <label htmlFor={`mobile-language-${key}`} className="text-sm cursor-pointer text-white font-medium">
+                                  {display}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Categories Filter Mobile */}
+                      <div className="bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] border-2 border-[#f97316] rounded-lg p-4 shadow-lg">
+                        <div 
+                          className="flex items-center justify-between cursor-pointer mb-3"
+                          onClick={() => toggleSection('categories')}
+                          role="button"
+                          aria-expanded={expandedSections.categories}
+                        >
+                          <span className="text-sm font-bold text-white">{t('categories')}</span>
+                          {expandedSections.categories ? <ChevronUp className="h-4 w-4 text-[#f97316]" /> : <ChevronDown className="h-4 w-4 text-[#f97316]" />}
+                        </div>
+                        {expandedSections.categories && (
+                          <div className="space-y-2 max-h-48 overflow-y-auto">
+                            {filterOptions.categories.map((category) => (
+                              <div key={category} className="flex items-center space-x-2 rtl:space-x-reverse">
+                                <Checkbox
+                                  id={`mobile-category-${category}`}
+                                  checked={filters.categories.includes(category)}
+                                  onCheckedChange={() => toggleFilter('categories', category)}
+                                />
+                                <label htmlFor={`mobile-category-${category}`} className="text-xs cursor-pointer text-white font-medium">
+                                  {category}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Formats Filter Mobile */}
+                      <div className="bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] border-2 border-[#f97316] rounded-lg p-4 shadow-lg">
+                        <div 
+                          className="flex items-center justify-between cursor-pointer mb-3"
+                          onClick={() => toggleSection('formats')}
+                          role="button"
+                          aria-expanded={expandedSections.formats}
+                        >
+                          <span className="text-sm font-bold text-white">{t('formats')}</span>
+                          {expandedSections.formats ? <ChevronUp className="h-4 w-4 text-[#f97316]" /> : <ChevronDown className="h-4 w-4 text-[#f97316]" />}
+                        </div>
+                        {expandedSections.formats && (
+                          <div className="space-y-2 max-h-48 overflow-y-auto">
+                            {filterOptions.formats.slice(0, 12).map((format) => (
+                              <div key={format} className="flex items-center space-x-2 rtl:space-x-reverse">
+                                <Checkbox
+                                  id={`mobile-format-${format}`}
+                                  checked={filters.formats.includes(format)}
+                                  onCheckedChange={() => toggleFilter('formats', format)}
+                                />
+                                <label htmlFor={`mobile-format-${format}`} className="text-xs cursor-pointer text-white font-medium">
+                                  {format}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Sizes Filter Mobile */}
+                      <div className="bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] border-2 border-[#f97316] rounded-lg p-4 shadow-lg">
+                        <div 
+                          className="flex items-center justify-between cursor-pointer mb-3"
+                          onClick={() => toggleSection('sizes')}
+                          role="button"
+                          aria-expanded={expandedSections.sizes}
+                        >
+                          <span className="text-sm font-bold text-white">{t('sizes')}</span>
+                          {expandedSections.sizes ? <ChevronUp className="h-4 w-4 text-[#f97316]" /> : <ChevronDown className="h-4 w-4 text-[#f97316]" />}
+                        </div>
+                        {expandedSections.sizes && (
+                          <div className="space-y-2">
+                            {filterOptions.sizes.map((size) => (
+                              <div key={size} className="flex items-center space-x-2 rtl:space-x-reverse">
+                                <Checkbox
+                                  id={`mobile-size-${size}`}
+                                  checked={filters.sizes.includes(size)}
+                                  onCheckedChange={() => toggleFilter('sizes', size)}
+                                />
+                                <label htmlFor={`mobile-size-${size}`} className="text-xs cursor-pointer text-white font-medium">
+                                  {size}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </SheetContent>
                 </Sheet>
