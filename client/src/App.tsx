@@ -55,6 +55,7 @@ import Hilloula from "@/pages/hilloula-2024";
 import Testimonials from "@/pages/testimonials";
 import BreslovVideos from "@/pages/breslov-videos";
 import NotFound from "@/pages/not-found";
+import { HilloulaBuilder, TestimonialsBuilder } from "@/components/BuilderPage";
 
 function Router() {
   return (
@@ -77,8 +78,8 @@ function Router() {
       <Route path="/chat" component={Chat} />
       <Route path="/lottery" component={Lottery} />
       <Route path="/lottery/admin" component={LotteryAdmin} />
-      <Route path="/hilloula-2024" component={Hilloula} />
-      <Route path="/testimonials" component={Testimonials} />
+      <Route path="/hilloula-2024" component={HilloulaBuilder} />
+      <Route path="/testimonials" component={TestimonialsBuilder} />
       <Route path="/yaaakov" component={YaakovDashboard} />
       <Route component={NotFound} />
     </Switch>
