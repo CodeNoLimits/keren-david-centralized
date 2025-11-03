@@ -722,16 +722,35 @@ export default function Store() {
                       {/* Price Filter Mobile */}
                       <div className="bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] border-2 border-[#f97316] rounded-lg p-4 shadow-lg">
                         <div 
-                          className="flex items-center justify-between cursor-pointer mb-3"
-                          onClick={() => toggleSection('price')}
+                          className="flex items-center justify-between cursor-pointer mb-3 py-2 -mx-2 px-2 rounded hover:bg-white/10 active:bg-white/20 transition-colors"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleSection('price');
+                          }}
+                          onTouchStart={(e) => {
+                            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
+                          onTouchEnd={(e) => {
+                            e.currentTarget.style.backgroundColor = '';
+                          }}
                           role="button"
                           aria-expanded={expandedSections.price}
+                          aria-controls="mobile-price-filter-content"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              toggleSection('price');
+                            }
+                          }}
+                          data-testid="mobile-label-price-range"
                         >
-                          <span className="text-sm font-bold text-white">{t('priceRange')}</span>
+                          <span className="text-sm font-bold text-white select-none">{t('priceRange')}</span>
                           {expandedSections.price ? <ChevronUp className="h-4 w-4 text-[#f97316]" /> : <ChevronDown className="h-4 w-4 text-[#f97316]" />}
                         </div>
                         {expandedSections.price && (
-                          <div className="space-y-3">
+                          <div id="mobile-price-filter-content" className="space-y-3" role="group" aria-label={t('priceRange')}>
                             <Slider
                               min={filterOptions.priceRange[0]}
                               max={filterOptions.priceRange[1]}
@@ -750,16 +769,35 @@ export default function Store() {
                       {/* Authors Filter Mobile */}
                       <div className="bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] border-2 border-[#f97316] rounded-lg p-4 shadow-lg">
                         <div 
-                          className="flex items-center justify-between cursor-pointer mb-3"
-                          onClick={() => toggleSection('authors')}
+                          className="flex items-center justify-between cursor-pointer mb-3 py-2 -mx-2 px-2 rounded hover:bg-white/10 active:bg-white/20 transition-colors"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleSection('authors');
+                          }}
+                          onTouchStart={(e) => {
+                            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
+                          onTouchEnd={(e) => {
+                            e.currentTarget.style.backgroundColor = '';
+                          }}
                           role="button"
                           aria-expanded={expandedSections.authors}
+                          aria-controls="mobile-authors-filter-content"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              toggleSection('authors');
+                            }
+                          }}
+                          data-testid="mobile-label-authors"
                         >
-                          <span className="text-sm font-bold text-white">{t('authors')}</span>
+                          <span className="text-sm font-bold text-white select-none">{t('authors')}</span>
                           {expandedSections.authors ? <ChevronUp className="h-4 w-4 text-[#f97316]" /> : <ChevronDown className="h-4 w-4 text-[#f97316]" />}
                         </div>
                         {expandedSections.authors && (
-                          <div className="space-y-3 max-h-60 overflow-y-auto">
+                          <div id="mobile-authors-filter-content" className="space-y-3 max-h-60 overflow-y-auto" role="group" aria-label={t('authors')}>
                             {Object.entries(filterOptions.authorGroups).map(([groupName, authors]) => (
                               authors.length > 0 && (
                                 <div key={groupName} className="bg-white/10 rounded p-2">
@@ -789,16 +827,35 @@ export default function Store() {
                       {/* Languages Filter Mobile */}
                       <div className="bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] border-2 border-[#f97316] rounded-lg p-4 shadow-lg">
                         <div 
-                          className="flex items-center justify-between cursor-pointer mb-3"
-                          onClick={() => toggleSection('languages')}
+                          className="flex items-center justify-between cursor-pointer mb-3 py-2 -mx-2 px-2 rounded hover:bg-white/10 active:bg-white/20 transition-colors"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleSection('languages');
+                          }}
+                          onTouchStart={(e) => {
+                            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
+                          onTouchEnd={(e) => {
+                            e.currentTarget.style.backgroundColor = '';
+                          }}
                           role="button"
                           aria-expanded={expandedSections.languages}
+                          aria-controls="mobile-languages-filter-content"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              toggleSection('languages');
+                            }
+                          }}
+                          data-testid="mobile-label-languages"
                         >
-                          <span className="text-sm font-bold text-white">{t('languages')}</span>
+                          <span className="text-sm font-bold text-white select-none">{t('languages')}</span>
                           {expandedSections.languages ? <ChevronUp className="h-4 w-4 text-[#f97316]" /> : <ChevronDown className="h-4 w-4 text-[#f97316]" />}
                         </div>
                         {expandedSections.languages && (
-                          <div className="space-y-2 max-h-48 overflow-y-auto">
+                          <div id="mobile-languages-filter-content" className="space-y-2 max-h-48 overflow-y-auto" role="group" aria-label={t('languages')}>
                             {[
                               { key: 'עברית', display: t('hebrew') },
                               { key: 'Français', display: t('french') },
@@ -823,16 +880,35 @@ export default function Store() {
                       {/* Categories Filter Mobile */}
                       <div className="bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] border-2 border-[#f97316] rounded-lg p-4 shadow-lg">
                         <div 
-                          className="flex items-center justify-between cursor-pointer mb-3"
-                          onClick={() => toggleSection('categories')}
+                          className="flex items-center justify-between cursor-pointer mb-3 py-2 -mx-2 px-2 rounded hover:bg-white/10 active:bg-white/20 transition-colors"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleSection('categories');
+                          }}
+                          onTouchStart={(e) => {
+                            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
+                          onTouchEnd={(e) => {
+                            e.currentTarget.style.backgroundColor = '';
+                          }}
                           role="button"
                           aria-expanded={expandedSections.categories}
+                          aria-controls="mobile-categories-filter-content"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              toggleSection('categories');
+                            }
+                          }}
+                          data-testid="mobile-label-categories"
                         >
-                          <span className="text-sm font-bold text-white">{t('categories')}</span>
+                          <span className="text-sm font-bold text-white select-none">{t('categories')}</span>
                           {expandedSections.categories ? <ChevronUp className="h-4 w-4 text-[#f97316]" /> : <ChevronDown className="h-4 w-4 text-[#f97316]" />}
                         </div>
                         {expandedSections.categories && (
-                          <div className="space-y-2 max-h-48 overflow-y-auto">
+                          <div id="mobile-categories-filter-content" className="space-y-2 max-h-48 overflow-y-auto" role="group" aria-label={t('categories')}>
                             {filterOptions.categories.map((category) => (
                               <div key={category} className="flex items-center space-x-2 rtl:space-x-reverse">
                                 <Checkbox
@@ -852,16 +928,35 @@ export default function Store() {
                       {/* Formats Filter Mobile */}
                       <div className="bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] border-2 border-[#f97316] rounded-lg p-4 shadow-lg">
                         <div 
-                          className="flex items-center justify-between cursor-pointer mb-3"
-                          onClick={() => toggleSection('formats')}
+                          className="flex items-center justify-between cursor-pointer mb-3 py-2 -mx-2 px-2 rounded hover:bg-white/10 active:bg-white/20 transition-colors"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleSection('formats');
+                          }}
+                          onTouchStart={(e) => {
+                            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
+                          onTouchEnd={(e) => {
+                            e.currentTarget.style.backgroundColor = '';
+                          }}
                           role="button"
                           aria-expanded={expandedSections.formats}
+                          aria-controls="mobile-formats-filter-content"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              toggleSection('formats');
+                            }
+                          }}
+                          data-testid="mobile-label-formats"
                         >
-                          <span className="text-sm font-bold text-white">{t('formats')}</span>
+                          <span className="text-sm font-bold text-white select-none">{t('formats')}</span>
                           {expandedSections.formats ? <ChevronUp className="h-4 w-4 text-[#f97316]" /> : <ChevronDown className="h-4 w-4 text-[#f97316]" />}
                         </div>
                         {expandedSections.formats && (
-                          <div className="space-y-2 max-h-48 overflow-y-auto">
+                          <div id="mobile-formats-filter-content" className="space-y-2 max-h-48 overflow-y-auto" role="group" aria-label={t('formats')}>
                             {filterOptions.formats.slice(0, 12).map((format) => (
                               <div key={format} className="flex items-center space-x-2 rtl:space-x-reverse">
                                 <Checkbox
@@ -881,16 +976,35 @@ export default function Store() {
                       {/* Sizes Filter Mobile */}
                       <div className="bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] border-2 border-[#f97316] rounded-lg p-4 shadow-lg">
                         <div 
-                          className="flex items-center justify-between cursor-pointer mb-3"
-                          onClick={() => toggleSection('sizes')}
+                          className="flex items-center justify-between cursor-pointer mb-3 py-2 -mx-2 px-2 rounded hover:bg-white/10 active:bg-white/20 transition-colors"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleSection('sizes');
+                          }}
+                          onTouchStart={(e) => {
+                            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
+                          onTouchEnd={(e) => {
+                            e.currentTarget.style.backgroundColor = '';
+                          }}
                           role="button"
                           aria-expanded={expandedSections.sizes}
+                          aria-controls="mobile-sizes-filter-content"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              toggleSection('sizes');
+                            }
+                          }}
+                          data-testid="mobile-label-sizes"
                         >
-                          <span className="text-sm font-bold text-white">{t('sizes')}</span>
+                          <span className="text-sm font-bold text-white select-none">{t('sizes')}</span>
                           {expandedSections.sizes ? <ChevronUp className="h-4 w-4 text-[#f97316]" /> : <ChevronDown className="h-4 w-4 text-[#f97316]" />}
                         </div>
                         {expandedSections.sizes && (
-                          <div className="space-y-2">
+                          <div id="mobile-sizes-filter-content" className="space-y-2" role="group" aria-label={t('sizes')}>
                             {filterOptions.sizes.map((size) => (
                               <div key={size} className="flex items-center space-x-2 rtl:space-x-reverse">
                                 <Checkbox
