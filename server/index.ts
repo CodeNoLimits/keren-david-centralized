@@ -71,6 +71,12 @@ app.use((req, res, next) => {
   const port = parseInt(process.env.PORT || '5000', 10);
   const host = isDevelopment ? "localhost" : "0.0.0.0";
 
+  // Configure timeouts to prevent Render.com health check timeouts
+  // Render's health checks fail after 5 seconds, but we need higher values
+  // to prevent connection issues during idle periods
+  server.keepAliveTimeout = 120000; // 120 seconds
+  server.headersTimeout = 120000; // 120 seconds
+
   // Use standard listen format for Render.com compatibility
   server.listen(port, host, () => {
     log(`🚀 Server running on ${host}:${port}`);
