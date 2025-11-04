@@ -32,10 +32,11 @@ const translations = {
   },
   en: {
     home: 'Home',
-    store: 'Store', 
+    store: 'Store',
     about: 'About',
     contact: 'Contact',
     magazine: 'Magazine',
+    lottery: '🎰 Lottery',
     join: 'Join',
     downloads: 'Downloads',
     subscription: 'Subscription',
@@ -214,6 +215,9 @@ export function Header({ currentLanguage = 'he', onLanguageChange }: HeaderProps
             </li>
             <li className={location === '/magazine' ? 'current-menu-item' : ''}>
               <Link href="/magazine" data-testid="link-magazine" className="transition-all duration-300 hover:scale-110 hover:text-orange-400 hover:drop-shadow-lg inline-block hover:-translate-y-1">{t.magazine}</Link>
+            </li>
+            <li className={location === '/lottery' ? 'current-menu-item' : ''}>
+              <Link href="/lottery" data-testid="link-lottery" className="transition-all duration-300 hover:scale-110 hover:text-orange-400 hover:drop-shadow-lg inline-block hover:-translate-y-1">{t.lottery || '🎰 ' + (currentLanguage === 'he' ? 'הגרלה' : currentLanguage === 'fr' ? 'Loterie' : currentLanguage === 'es' ? 'Lotería' : currentLanguage === 'ru' ? 'Лотерея' : 'Lottery')}</Link>
             </li>
             <li className={location === '/join' ? 'current-menu-item' : ''}>
               <Link href="/join" data-testid="link-join" className="transition-all duration-300 hover:scale-110 hover:text-orange-400 hover:drop-shadow-lg inline-block hover:-translate-y-1">{t.join}</Link>

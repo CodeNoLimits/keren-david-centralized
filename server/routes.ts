@@ -7,13 +7,13 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import Stripe from "stripe";
 import { User } from "@shared/schema";
-import { sendOrderConfirmation, sendLotteryConfirmation } from "./emailService";
+import { sendOrderConfirmation } from "./emailService";
 import { chatWithGemini, chatWithGeminiStream, checkGeminiConnection, analyzeUserSentiment, type ChatRequest, type ChatMessage } from "./geminiService";
 import { chatWithOpenAI, chatWithOpenAIStream, checkOpenAIConnection, analyzeUserSentimentOpenAI } from "./openaiService";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import newFeaturesRouter from "./newFeatures"; // NEW FEATURES - Newsletter, Reviews, Shiurim, Wishlist
 import { healthCheck } from "./health";
-import { supa, createLotteryEntry, getLotteryEntries, getDraws, createDraw, getLotteryEntryById } from "./lib/supabase";
+import { supa, createLotteryEntry, getLotteryEntries, getDraws, createDraw, getLotteryEntryById, createLotteryEntryFromOrder } from "./lib/supabase";
 import { z } from "zod";
 
 // Helper function to safely check if user is authenticated in both dev and production modes
@@ -752,65 +752,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
               // Don't fail the webhook if email fails
             }
             
-            console.log(`Payment succeeded for order ${orderId}`);
-
-            // ✨ INSCRIPTION AUTOMATIQUE À LA LOTERIE
+            // 🎯 LOTTERY: Créer automatiquement une entrée loterie après paiement réussi
             try {
-              if (supa && orderId) {
-                const order = await storage.getOrder(orderId);
-
-                if (order && order.email) {
-                  // Vérifier si déjà inscrit
-                  const { data: existingEntry } = await supa
-                    .from('lottery_entries')
-                    .select('id')
-                    .eq('email', order.email)
-                    .maybeSingle();
-
-                  if (!existingEntry) {
-                    // Inscrire automatiquement
-                    const { data: newEntry, error: lotteryError } = await supa
-                      .from('lottery_entries')
-                      .insert([{
-                        email: order.email,
-                        name: order.shippingAddress?.fullName || null,
-                        phone: order.shippingAddress?.phone || null,
-                        source: 'shopify',
-                        order_id: order.id,
-                        metadata: {
-                          order_amount: order.totalAmount,
-                          order_date: new Date().toISOString(),
-                          auto_enrolled: true
-                        }
-                      }])
-                      .select()
-                      .single();
-
-                    if (!lotteryError && newEntry) {
-                      console.log(`✅ Auto-enrolled ${order.email} in lottery (entry: ${newEntry.id})`);
-
-                      // Envoyer email confirmation loterie
-                      try {
-                        await sendLotteryConfirmation(
-                          order.email,
-                          order.shippingAddress?.fullName || 'Client',
-                          newEntry.id
-                        );
-                      } catch (emailErr) {
-                        console.warn('⚠️ Failed to send lottery confirmation email:', emailErr);
-                      }
-                    } else {
-                      console.warn('⚠️ Failed to auto-enroll in lottery:', lotteryError);
-                    }
-                  } else {
-                    console.log(`ℹ️ ${order.email} already enrolled in lottery`);
-                  }
-                }
+              const order = await storage.getOrder(orderId);
+              if (order && order.email) {
+                const customerName = order.shippingAddress?.fullName || order.email.split('@')[0];
+                const orderAmount = order.totalAmount; // en agorot
+                
+                await createLotteryEntryFromOrder(
+                  order.email,
+                  customerName,
+                  orderId,
+                  orderAmount
+                );
+                
+                console.log(`✅ Lottery entry created automatically for order ${orderId}`);
               }
             } catch (lotteryError) {
-              console.error('❌ Lottery auto-enrollment error:', lotteryError);
+              console.error(`❌ Failed to create lottery entry for order ${orderId}:`, lotteryError);
               // Ne pas faire échouer le webhook si la loterie échoue
             }
+            
+            console.log(`Payment succeeded for order ${orderId}`);
           }
           break;
         }

@@ -677,9 +677,9 @@ export default function Store() {
           </div>
         </div>
 
-        {/* Main Content Area */}
+        {/* Main Content Area - PADDING MOBILE OPTIMISÉ */}
         <div className="flex-1 w-full">
-          <div className="p-3 sm:p-4 md:p-6">
+          <div className="p-4 sm:p-5 md:p-6">
             <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
               <div className="flex items-center space-x-4">
                 {/* Mobile Filter Button - Opens Drawer */}
@@ -1044,37 +1044,37 @@ export default function Store() {
 
             {/* Étageres graphiques pour présenter les livres - Style présentoir */}
             <div className="relative mb-6 mt-4">
-              {/* Étagère supérieure décorative - Style bois */}
-              <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800 rounded-t-lg shadow-2xl border-b-4 border-amber-900" style={{zIndex: 1, boxShadow: '0 4px 6px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.1)'}}></div>
-              
-              {/* Grille produits avec effet étagère */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-3 pt-8 px-2 sm:px-0">
+              {/* Étagère supérieure décorative - Style bois - CACHÉE SUR MOBILE */}
+              <div className="hidden md:block absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800 rounded-t-lg shadow-2xl border-b-4 border-amber-900" style={{zIndex: 1, boxShadow: '0 4px 6px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.1)'}}></div>
+
+              {/* Grille produits avec effet étagère - OPTIMISÉE MOBILE */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-5 md:gap-4 md:pt-8 px-1 sm:px-0">
                 {filteredProducts.map((product, index) => (
                   // Encadré étagère individuelle pour chaque livre - Style présentoir discret
-                  <div key={product.id} className="relative mb-6">
-                    {/* Étagère supérieure individuelle */}
-                    <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800 rounded-t-lg shadow-md border-b border-amber-900" style={{zIndex: 2}}></div>
+                  <div key={product.id} className="relative mb-4 md:mb-6">
+                    {/* Étagère supérieure individuelle - CACHÉE SUR MOBILE */}
+                    <div className="hidden md:block absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800 rounded-t-lg shadow-md border-b border-amber-900" style={{zIndex: 2}}></div>
                     
-                    {/* Carte produit */}
-                    <div 
-                      key={product.id} 
-                      className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-amber-200 hover:border-[#f97316] hover:-translate-y-3 relative pt-2"
+                    {/* Carte produit - OPTIMISÉE MOBILE */}
+                    <div
+                      key={product.id}
+                      className="bg-white rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border-2 md:border-amber-200 border-blue-200 hover:border-[#f97316] hover:-translate-y-2 md:hover:-translate-y-3 relative md:pt-2"
                       data-testid={`card-product-${product.id}`}
                       style={{
                         transform: `perspective(1000px) rotateY(${index % 4 === 0 ? '1deg' : index % 4 === 3 ? '-1deg' : '0deg'})`,
                       }}
                     >
-                      {/* Support étagère sous le livre - Style présentoir discret mais visible */}
-                      <div className="absolute -bottom-3 left-0 right-0 h-3 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 rounded-b-lg shadow-lg opacity-80" style={{boxShadow: '0 3px 6px rgba(0,0,0,0.25)'}}></div>
+                      {/* Support étagère sous le livre - CACHÉ SUR MOBILE */}
+                      <div className="hidden md:block absolute -bottom-3 left-0 right-0 h-3 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 rounded-b-lg shadow-lg opacity-80" style={{boxShadow: '0 3px 6px rgba(0,0,0,0.25)'}}></div>
                     
                     {/* Image */}
                     <Link href={`/product/${product.id}`}>
                       {product.images && product.images.length > 0 ? (
                         <div className="relative overflow-hidden">
-                          <img 
+                          <img
                             src={convertImagePath(product.images[0])}
                             alt={product.name}
-                            className="w-full h-40 sm:h-48 md:h-52 object-cover cursor-pointer hover:scale-110 transition-transform duration-500"
+                            className="w-full h-56 sm:h-64 md:h-52 lg:h-56 object-cover cursor-pointer hover:scale-105 transition-transform duration-500"
                             data-testid={`img-product-${product.id}`}
                             loading="lazy"
                             onError={(e) => {
@@ -1094,37 +1094,37 @@ export default function Store() {
                       )}
                     </Link>
                   
-                  {/* Content */}
-                  <div className="p-4">
+                  {/* Content - OPTIMISÉ MOBILE */}
+                  <div className="p-5 sm:p-4">
                     <Link href={`/product/${product.id}`}>
-                      <h3 
-                        className="font-semibold text-lg mb-2 text-gray-900 line-clamp-2 cursor-pointer hover:text-blue-600 transition-colors"
+                      <h3
+                        className="font-bold text-xl sm:text-lg mb-3 sm:mb-2 text-gray-900 line-clamp-2 cursor-pointer hover:text-blue-600 transition-colors leading-tight"
                         data-testid={`text-title-${product.id}`}
                       >
                         {getInterfaceDisplayTitle(product, currentLanguage)}
                       </h3>
                     </Link>
-                    
-                    <div 
-                      className="text-lg font-bold text-[#1e40af] mb-2"
+
+                    <div
+                      className="text-2xl sm:text-lg font-bold text-[#1e40af] mb-3 sm:mb-2"
                       data-testid={`text-price-${product.id}`}
                     >
-                      {product.variants && product.variants.length > 0 ? 
-                        `${Math.min(...product.variants.map(v => v.price))} ₪ – ${Math.max(...product.variants.map(v => v.price))} ₪` : 
+                      {product.variants && product.variants.length > 0 ?
+                        `${Math.min(...product.variants.map(v => v.price))} ₪ – ${Math.max(...product.variants.map(v => v.price))} ₪` :
                         t('noPrice')
                       }
                     </div>
-                    
-                    <div 
-                      className="text-sm text-gray-600 mb-3"
+
+                    <div
+                      className="text-base sm:text-sm text-gray-600 mb-4 sm:mb-3 font-medium"
                       data-testid={`text-category-${product.id}`}
                     >
                       {product.category}
                     </div>
                     
                     <Link href={`/product/${product.id}`}>
-                      <Button 
-                        className="w-full bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] hover:from-[#1e3a8a] hover:to-[#1e40af] text-white shadow-md hover:shadow-lg transition-all duration-300"
+                      <Button
+                        className="w-full bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] hover:from-[#1e3a8a] hover:to-[#1e40af] text-white shadow-md hover:shadow-lg transition-all duration-300 py-6 sm:py-3 text-lg sm:text-base font-bold"
                         data-testid={`button-view-details-${product.id}`}
                       >
                         {t('viewDetails')}
@@ -1132,9 +1132,9 @@ export default function Store() {
                     </Link>
                   </div>
                 </div>
-                    
-                {/* Étagère inférieure individuelle */}
-                <div className="absolute -bottom-4 left-0 right-0 h-2 bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800 rounded-b-lg shadow-md border-t border-amber-900" style={{zIndex: 2}}></div>
+
+                {/* Étagère inférieure individuelle - CACHÉE SUR MOBILE */}
+                <div className="hidden md:block absolute -bottom-4 left-0 right-0 h-2 bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800 rounded-b-lg shadow-md border-t border-amber-900" style={{zIndex: 2}}></div>
               </div>
                 ))}
               </div>

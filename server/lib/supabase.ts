@@ -109,6 +109,55 @@ export async function createLotteryEntry(entry: Partial<LotteryEntry>) {
   return data as LotteryEntry;
 }
 
+// Helper function to create lottery entry from order (after successful payment)
+export async function createLotteryEntryFromOrder(
+  email: string,
+  name: string,
+  orderId: string,
+  amount?: number
+): Promise<LotteryEntry | null> {
+  if (!supa) {
+    console.warn('⚠️ Supabase not configured. Skipping lottery entry from order.');
+    return null;
+  }
+
+  try {
+    // Vérifier si déjà inscrit via achat pour cette commande
+    const { data: existing } = await supa
+      .from('lottery_entries')
+      .select('id')
+      .eq('email', email)
+      .eq('source', 'shopify')
+      .eq('order_id', orderId)
+      .maybeSingle();
+
+    if (existing) {
+      console.log(`✅ Lottery entry already exists for order ${orderId}`);
+      return existing as LotteryEntry;
+    }
+
+    // Créer nouvelle entrée
+    const entry = await createLotteryEntry({
+      email,
+      name,
+      source: 'shopify',
+      order_id: orderId,
+      metadata: {
+        order_id: orderId,
+        ...(amount && { donation_amount: amount.toString() }),
+        created_from: 'stripe_payment'
+      }
+    });
+
+    console.log(`✅ Lottery entry created from order ${orderId} for ${email}`);
+    return entry;
+  } catch (error: any) {
+    console.error('❌ Error creating lottery entry from order:', error);
+    // Ne pas faire échouer le processus de commande si la loterie échoue
+    return null;
+  }
+}
+
 export async function getDraws() {
   if (!supa) {
     throw new Error('Supabase not configured');
