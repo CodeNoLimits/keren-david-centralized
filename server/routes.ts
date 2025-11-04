@@ -1286,18 +1286,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const data = LotteryJoinSchema.parse(req.body);
 
+      // Rate limiting: 3 inscriptions par IP par heure
+      const ip = req.ip || req.connection.remoteAddress || 'unknown';
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+
+      if (supa) {
+        const { data: recentEntries } = await supa
+          .from('lottery_entries')
+          .select('id, created_at')
+          .gte('created_at', oneHourAgo.toISOString());
+
+        // Filtrer par IP dans metadata (si disponible)
+        const entriesFromSameIP = recentEntries?.filter((entry: any) => {
+          const entryIp = entry.metadata?.ip_address;
+          return entryIp === ip;
+        }) || [];
+
+        if (entriesFromSameIP.length >= 3) {
+          return res.status(429).json({
+            ok: false,
+            error: 'Trop d\'inscriptions. Maximum 3 par heure.',
+            message: 'יותר מדי הרשמות. מקסימום 3 בשעה.'
+          });
+        }
+      }
+
       const insertData: any = {
         email: data.email,
         name: data.name,
         source: 'form',
+        metadata: {
+          ip_address: ip,
+          ...(data.donation_amount && { donation_amount: data.donation_amount })
+        }
       };
 
       if (data.phone) insertData.phone = data.phone;
-      if (data.donation_amount) {
-        insertData.metadata = { donation_amount: data.donation_amount };
-      }
 
       const entry = await createLotteryEntry(insertData);
+
+      // Envoyer email de confirmation (non-bloquant)
+      try {
+        const { sendLotteryConfirmation } = await import('./emailService');
+        await sendLotteryConfirmation(data.email, data.name, entry.id);
+      } catch (emailError) {
+        console.error('Email confirmation failed (non-critical):', emailError);
+        // Ne pas faire échouer l'inscription si l'email échoue
+      }
 
       res.json({
         ok: true,
@@ -1507,6 +1542,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({
         ok: false,
         error: 'Erreur serveur lors de la récupération des statistiques.'
+      });
+    }
+  });
+
+  // API: Nombre de participants (GET /api/lottery/count) - Public
+  app.get('/api/lottery/count', async (req, res) => {
+    try {
+      if (!supa) {
+        return res.status(503).json({
+          ok: false,
+          error: 'La loterie n\'est pas configurée.'
+        });
+      }
+
+      const entries = await getLotteryEntries();
+      
+      res.json({
+        ok: true,
+        count: entries.length
+      });
+
+    } catch (error: any) {
+      console.error('Lottery count error:', error);
+      res.status(500).json({
+        ok: false,
+        error: 'Erreur serveur lors de la récupération du nombre.'
       });
     }
   });

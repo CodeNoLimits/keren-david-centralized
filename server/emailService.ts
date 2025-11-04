@@ -44,6 +44,56 @@ export async function sendEmail(params: EmailParams): Promise<boolean> {
 }
 
 // Order confirmation email template
+// Lottery confirmation email
+export async function sendLotteryConfirmation(
+  email: string,
+  fullName: string,
+  entryId: string
+): Promise<boolean> {
+  if (!process.env.SENDGRID_API_KEY) {
+    console.warn('⚠️ SendGrid not configured. Skipping lottery confirmation email.');
+    return false;
+  }
+
+  const subject = 'אישור הרשמה להגרלה - Lottery Registration Confirmed';
+  const text = `שלום ${fullName},\n\nנרשמת בהצלחה להגרלת ההילולא!\n\nמספר אסמכתא: ${entryId}\n\nההגרלה תתקיים בתאריך י"ח חשון תשפ"ו (9 בנובמבר 2025) בהשתתפות 20,000 איש.\n\nבהצלחה!\n\nצוות האש שלי\nנ נח נחמ נחמן מאומן ✨`;
+
+  const html = `
+    <div dir="rtl" style="font-family: 'Assistant', 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f9fafb;">
+      <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h2 style="color: #1e40af; margin-bottom: 20px; font-size: 24px;">שלום ${fullName},</h2>
+        <p style="font-size: 16px; line-height: 1.6; color: #333; margin-bottom: 20px;">
+          נרשמת בהצלחה להגרלת ההילולא של רבי נחמן מברסלב זצ"ל!
+        </p>
+        <div style="background: #f0f4ff; padding: 15px; border-radius: 8px; margin: 20px 0; border-right: 4px solid #f97316;">
+          <p style="margin: 0; font-size: 14px; color: #666;">
+            <strong style="color: #1e40af;">מספר אסמכתא:</strong> ${entryId}
+          </p>
+        </div>
+        <p style="font-size: 16px; line-height: 1.6; color: #333; margin: 20px 0;">
+          ההגרלה תתקיים בתאריך <strong>י"ח חשון תשפ"ו (9 בנובמבר 2025)</strong> בהשתתפות 20,000 איש.
+        </p>
+        <p style="font-size: 18px; color: #f97316; font-weight: bold; margin: 30px 0;">
+          בהצלחה! 🎉
+        </p>
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+        <p style="font-size: 12px; color: #666; text-align: center; margin: 0;">
+          האש שלי - על פי נחמן מברסלב<br>
+          נ נח נחמ נחמן מאומן ✨
+        </p>
+      </div>
+    </div>
+  `;
+
+  return await sendEmail({
+    to: email,
+    from: process.env.SENDGRID_FROM_EMAIL || 'lottery@haesh-sheli.co.il',
+    subject,
+    text,
+    html
+  });
+}
+
 export function generateOrderConfirmationHTML(orderData: {
   orderId: string;
   customerName: string;
