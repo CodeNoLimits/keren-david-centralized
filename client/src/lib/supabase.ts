@@ -438,4 +438,105 @@ export const statsService = {
   }
 }
 
+// Service loterie
+export const lotteryService = {
+  // Obtenir le nombre de participants
+  async getEntriesCount() {
+    const { data, error } = await supabase
+      .rpc('get_lottery_entries_count')
+
+    if (error) {
+      console.error('Erreur lors du comptage des entrées:', error)
+      return 0
+    }
+
+    return data || 0
+  },
+
+  // Créer une entrée de loterie
+  async createEntry(entryData: {
+    email: string
+    name?: string
+    phone?: string
+    source?: string
+    order_id?: string
+    subscription_contract_id?: string
+    metadata?: any
+  }) {
+    const { data, error } = await supabase
+      .from('lottery_entries')
+      .insert([{
+        email: entryData.email,
+        name: entryData.name,
+        phone: entryData.phone,
+        source: entryData.source || 'website',
+        order_id: entryData.order_id,
+        subscription_contract_id: entryData.subscription_contract_id,
+        metadata: entryData.metadata || {}
+      }])
+      .select()
+      .single()
+
+    if (error) {
+      // Si l'erreur est due à un doublon (unique constraint), on retourne quand même succès
+      if (error.code === '23505') {
+        console.log('L\'utilisateur est déjà inscrit à la loterie')
+        return { success: true, duplicate: true }
+      }
+      console.error('Erreur lors de la création de l\'entrée:', error)
+      throw error
+    }
+
+    return { success: true, data, duplicate: false }
+  },
+
+  // Créer une entrée après un achat (automatique)
+  async createEntryFromOrder(orderData: {
+    email: string
+    name?: string
+    phone?: string
+    order_id: string
+    amount: number
+  }) {
+    // Vérifier si le montant est >= 35 ILS
+    if (orderData.amount < 35) {
+      console.log('Montant insuffisant pour la loterie (< 35 ILS)')
+      return { success: false, reason: 'amount_too_low' }
+    }
+
+    try {
+      return await this.createEntry({
+        email: orderData.email,
+        name: orderData.name,
+        phone: orderData.phone,
+        source: 'order',
+        order_id: orderData.order_id,
+        metadata: {
+          amount: orderData.amount,
+          auto_enrolled: true,
+          enrolled_at: new Date().toISOString()
+        }
+      })
+    } catch (error) {
+      console.error('Erreur lors de l\'inscription automatique:', error)
+      return { success: false, error }
+    }
+  },
+
+  // Récupérer toutes les entrées (pour l'admin)
+  async getAllEntries() {
+    const { data, error } = await supabase
+      .from('lottery_entries')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Erreur lors de la récupération des entrées:', error)
+      throw error
+    }
+
+    return data || []
+  }
+}
+
 export default supabase

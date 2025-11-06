@@ -3,7 +3,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-export default function Home() {
+export default function HomeMagazine() {
   const { currentLanguage, setLanguage } = useLanguage();
   const [scrollY, setScrollY] = useState(0);
 
