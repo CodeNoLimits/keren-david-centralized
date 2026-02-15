@@ -17,10 +17,10 @@ import { supa, createLotteryEntry, getLotteryEntries, getDraws, createDraw, getL
 import { z } from "zod";
 
 // Helper function to safely check if user is authenticated in both dev and production modes
-function isUserAuthenticated(req: any): boolean {
+function isUserAuthenticated(req: Request): boolean {
   // In production (Replit), use Passport.js isAuthenticated
   if (typeof req.isAuthenticated === 'function') {
-    return isUserAuthenticated(req);
+    return req.isAuthenticated();
   }
   // In development mode, check if user exists
   return !!req.user;
@@ -50,7 +50,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   await setupAuth(app);
 
   // Auth routes - required for Replit Auth
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  app.get('/api/auth/user', isAuthenticated, async (req, res) => {
     try {
       // In development mode without auth, req.user is undefined
       if (!req.user || !req.user.claims) {
@@ -84,26 +84,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create middleware that checks multiple locations
   app.use('/attached_assets', (req, res, next) => {
     // Remove /attached_assets prefix and get the file name
-    const fileName = req.path.startsWith('/attached_assets/') 
+    const fileName = req.path.startsWith('/attached_assets/')
       ? req.path.replace('/attached_assets/', '')
       : req.path.replace('/attached_assets', '');
-    
+
     if (!fileName || fileName === '/') {
       return next();
     }
-    
+
     // Try to find file in priority order
     // In production: dist/public/attached_assets (built files)
     // In development: client/public/attached_assets
     // Fallback: root attached_assets/
     const isProduction = process.env.NODE_ENV === "production";
-    const searchPaths = isProduction 
+    const searchPaths = isProduction
       ? [distPublicAssets, rootAssets, clientPublicAssets]
       : [clientPublicAssets, distPublicAssets, rootAssets];
-    
+
     for (const searchPath of searchPaths) {
-      const filePath = path.join(searchPath, fileName);
-      
+      const filePath = path.resolve(searchPath, fileName);
+
+      // Prevent path traversal: resolved path must stay within search directory
+      if (!filePath.startsWith(searchPath + path.sep) && filePath !== searchPath) {
+        return res.status(403).send('Forbidden');
+      }
+
       if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
         // Set appropriate headers
         if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) {
@@ -117,7 +122,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.sendFile(filePath);
       }
     }
-    
+
     // File not found, let Vite handle it (for dev mode) or return 404
     next();
   });
@@ -337,7 +342,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Create Stripe payment intent with idempotency key to prevent duplicate charges
       const idempotencyKey = `order-${order.id}`;
-      const paymentIntentParams: any = {
+      const paymentIntentParams: Stripe.PaymentIntentCreateParams = {
         amount: totalAmount, // Already in agorot (Israeli cents)
         currency: 'ils',
         metadata: {
@@ -671,9 +676,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
     
     if (!webhookSecret) {
-      console.warn('Stripe webhook secret not configured, skipping signature verification');
-      // For development, we can proceed without signature verification
-      // In production, this should be required
+      if (process.env.NODE_ENV === 'production') {
+        console.error('STRIPE_WEBHOOK_SECRET is required in production');
+        return res.status(500).send('Webhook secret not configured');
+      }
+      console.warn('Stripe webhook secret not configured, skipping signature verification (dev only)');
     }
 
     let event;
@@ -904,8 +911,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.setHeader('Content-Type', 'text/plain; charset=utf-8');
       res.setHeader('Cache-Control', 'no-cache');
       res.setHeader('Connection', 'keep-alive');
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Access-Control-Allow-Headers', 'Cache-Control');
+      const allowedOrigin = req.headers.origin || '';
+      res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader('Access-Control-Allow-Headers', 'Cache-Control, Content-Type, Authorization');
 
       const chatRequest: ChatRequest = {
         message: message.trim(),
@@ -1097,8 +1106,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.setHeader('Content-Type', 'text/plain; charset=utf-8');
       res.setHeader('Cache-Control', 'no-cache');
       res.setHeader('Connection', 'keep-alive');
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Access-Control-Allow-Headers', 'Cache-Control');
+      const allowedOriginOpenAI = req.headers.origin || '';
+      res.setHeader('Access-Control-Allow-Origin', allowedOriginOpenAI);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader('Access-Control-Allow-Headers', 'Cache-Control, Content-Type, Authorization');
 
       const chatRequest: ChatRequest = {
         message: message.trim(),
@@ -1272,6 +1283,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Helper function pour Basic Auth (admin lottery)
   function verifyBasicAuth(req: Request): boolean {
+    const adminUser = process.env.LOTTERY_ADMIN_USER;
+    const adminPass = process.env.LOTTERY_ADMIN_PASS;
+
+    if (!adminUser || !adminPass) {
+      console.error('LOTTERY_ADMIN_USER and LOTTERY_ADMIN_PASS must be set in environment variables');
+      return false;
+    }
+
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Basic ')) {
       return false;
@@ -1279,9 +1298,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     const credentials = Buffer.from(authHeader.slice(6), 'base64').toString('utf-8');
     const [username, password] = credentials.split(':');
-
-    const adminUser = process.env.LOTTERY_ADMIN_USER || 'admin';
-    const adminPass = process.env.LOTTERY_ADMIN_PASS || 'admin';
 
     return username === adminUser && password === adminPass;
   }
@@ -1308,19 +1324,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const data = LotteryJoinSchema.parse(req.body);
 
       // Rate limiting: 3 inscriptions par IP par heure
-      const ip = req.ip || req.connection.remoteAddress || 'unknown';
+      // Use X-Forwarded-For only when behind a trusted reverse proxy
+      const ip = (process.env.TRUST_PROXY === '1' ? req.headers['x-forwarded-for']?.toString().split(',')[0].trim() : null)
+        || req.socket.remoteAddress
+        || 'unknown';
       const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
 
       if (supa) {
         const { data: recentEntries } = await supa
           .from('lottery_entries')
-          .select('id, created_at')
+          .select('id, created_at, metadata')
           .gte('created_at', oneHourAgo.toISOString());
 
-        // Filtrer par IP dans metadata (si disponible)
-        const entriesFromSameIP = recentEntries?.filter((entry: any) => {
-          const entryIp = entry.metadata?.ip_address;
-          return entryIp === ip;
+        // Filtrer par IP dans metadata
+        const entriesFromSameIP = recentEntries?.filter((entry: { id: string; created_at: string; metadata?: { ip_address?: string } }) => {
+          return entry.metadata?.ip_address === ip;
         }) || [];
 
         if (entriesFromSameIP.length >= 3) {
@@ -1332,7 +1350,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      const insertData: any = {
+      const insertData: Record<string, unknown> = {
         email: data.email,
         name: data.name,
         source: 'form',
