@@ -15,6 +15,9 @@ attached_assets/*.pdf
 # Local Netlify folder
 .netlify
 
+# Local Vercel folder
+.vercel
+
 # Environment variables - NE JAMAIS COMMITER
 .env
 .env.local

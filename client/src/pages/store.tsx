@@ -1042,67 +1042,49 @@ export default function Store() {
               </div>
             </div>
 
-            {/* Étageres graphiques pour présenter les livres - Style présentoir */}
-            <div className="relative mb-6 mt-4">
-              {/* Étagère supérieure décorative - Style bois - CACHÉE SUR MOBILE */}
-              <div className="hidden md:block absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800 rounded-t-lg shadow-2xl border-b-4 border-amber-900" style={{zIndex: 1, boxShadow: '0 4px 6px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.1)'}}></div>
+            {/* Modern Product Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-5 px-1 sm:px-0">
+              {filteredProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className="group bg-white dark:bg-gray-800/60 rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 dark:border-gray-700/50 hover:border-orange-300 dark:hover:border-orange-500/30 hover:-translate-y-3"
+                  data-testid={`card-product-${product.id}`}
+                >
+                  {/* Image */}
+                  <Link href={`/product/${product.id}`} aria-label={getInterfaceDisplayTitle(product, currentLanguage)}>
+                    {product.images && product.images.length > 0 ? (
+                      <div className="relative overflow-hidden h-56 sm:h-64 md:h-52 lg:h-56">
+                        <img
+                          src={convertImagePath(product.images[0])}
+                          alt={getInterfaceDisplayTitle(product, currentLanguage)}
+                          className="w-full h-full object-cover cursor-pointer group-hover:scale-110 transition-transform duration-700"
+                          data-testid={`img-product-${product.id}`}
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.src = '';
+                            e.currentTarget.alt = currentLanguage === 'he' ? 'תמונה לא זמינה' : 'Image unavailable';
+                            e.currentTarget.className = 'w-full h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center';
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                      </div>
+                    ) : (
+                      <div
+                        className="w-full h-52 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center cursor-pointer"
+                        data-testid={`placeholder-product-${product.id}`}
+                        role="img"
+                        aria-label={currentLanguage === 'he' ? 'ספר ברסלב' : 'Breslov book'}
+                      >
+                        <span className="text-4xl">📖</span>
+                      </div>
+                    )}
+                  </Link>
 
-              {/* Grille produits avec effet étagère - OPTIMISÉE MOBILE */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-5 md:gap-4 md:pt-8 px-1 sm:px-0">
-                {filteredProducts.map((product, index) => (
-                  // Encadré étagère individuelle pour chaque livre - Style présentoir discret
-                  <div key={product.id} className="relative mb-4 md:mb-6">
-                    {/* Étagère supérieure individuelle - CACHÉE SUR MOBILE */}
-                    <div className="hidden md:block absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800 rounded-t-lg shadow-md border-b border-amber-900" style={{zIndex: 2}}></div>
-                    
-                    {/* Carte produit - OPTIMISÉE MOBILE */}
-                    <div
-                      key={product.id}
-                      className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border-2 md:border-amber-200 border-blue-200 dark:border-gray-700 hover:border-[#f97316] hover:-translate-y-2 md:hover:-translate-y-3 relative md:pt-2"
-                      data-testid={`card-product-${product.id}`}
-                      style={{
-                        transform: `perspective(1000px) rotateY(${index % 4 === 0 ? '1deg' : index % 4 === 3 ? '-1deg' : '0deg'})`,
-                      }}
-                    >
-                      {/* Support étagère sous le livre - CACHÉ SUR MOBILE */}
-                      <div className="hidden md:block absolute -bottom-3 left-0 right-0 h-3 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 rounded-b-lg shadow-lg opacity-80" style={{boxShadow: '0 3px 6px rgba(0,0,0,0.25)'}}></div>
-                    
-                    {/* Image */}
-                    <Link href={`/product/${product.id}`} aria-label={getInterfaceDisplayTitle(product, currentLanguage)}>
-                      {product.images && product.images.length > 0 ? (
-                        <div className="relative overflow-hidden">
-                          <img
-                            src={convertImagePath(product.images[0])}
-                            alt={getInterfaceDisplayTitle(product, currentLanguage)}
-                            className="w-full h-56 sm:h-64 md:h-52 lg:h-56 object-cover cursor-pointer hover:scale-105 transition-transform duration-500"
-                            data-testid={`img-product-${product.id}`}
-                            loading="lazy"
-                            onError={(e) => {
-                              e.currentTarget.src = '';
-                              e.currentTarget.alt = currentLanguage === 'he' ? 'תמונה לא זמינה' : 'Image unavailable';
-                              e.currentTarget.className = 'w-full h-56 sm:h-64 md:h-52 lg:h-56 bg-gray-100 dark:bg-gray-800 flex items-center justify-center';
-                            }}
-                          />
-                          {/* Overlay gradient pour effet profondeur */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
-                        </div>
-                      ) : (
-                        <div
-                          className="w-full h-52 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center cursor-pointer hover:from-gray-200 hover:to-gray-300 transition-colors"
-                          data-testid={`placeholder-product-${product.id}`}
-                          role="img"
-                          aria-label={currentLanguage === 'he' ? 'ספר ברסלב' : 'Breslov book'}
-                        >
-                          <span className="text-4xl">📖</span>
-                        </div>
-                      )}
-                    </Link>
-                  
-                  {/* Content - OPTIMISÉ MOBILE */}
+                  {/* Content */}
                   <div className="p-5 sm:p-4">
                     <Link href={`/product/${product.id}`}>
                       <h3
-                        className="font-bold text-xl sm:text-lg mb-3 sm:mb-2 text-gray-900 dark:text-gray-100 line-clamp-2 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors leading-tight"
+                        className="font-bold text-lg mb-2 text-gray-900 dark:text-gray-100 line-clamp-2 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors leading-tight"
                         data-testid={`text-title-${product.id}`}
                       >
                         {getInterfaceDisplayTitle(product, currentLanguage)}
@@ -1110,7 +1092,7 @@ export default function Store() {
                     </Link>
 
                     <div
-                      className="text-2xl sm:text-lg font-bold text-[#1e40af] mb-3 sm:mb-2"
+                      className="text-xl sm:text-lg font-bold bg-gradient-to-r from-blue-700 to-blue-600 bg-clip-text text-transparent mb-2"
                       data-testid={`text-price-${product.id}`}
                     >
                       {product.variants && product.variants.length > 0 ?
@@ -1120,15 +1102,15 @@ export default function Store() {
                     </div>
 
                     <div
-                      className="text-base sm:text-sm text-gray-600 dark:text-gray-400 mb-4 sm:mb-3 font-medium"
+                      className="text-sm text-gray-500 dark:text-gray-400 mb-4 font-medium"
                       data-testid={`text-category-${product.id}`}
                     >
                       {product.category}
                     </div>
-                    
+
                     <Link href={`/product/${product.id}`}>
                       <Button
-                        className="w-full bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] hover:from-[#1e3a8a] hover:to-[#1e40af] text-white shadow-md hover:shadow-lg transition-all duration-300 py-6 sm:py-3 text-lg sm:text-base font-bold"
+                        className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-orange-500 hover:to-orange-600 text-white shadow-md hover:shadow-lg transition-all duration-300 py-3 text-base font-bold rounded-xl"
                         data-testid={`button-view-details-${product.id}`}
                         aria-label={`${t('viewDetails')} - ${getInterfaceDisplayTitle(product, currentLanguage)}`}
                       >
@@ -1137,12 +1119,7 @@ export default function Store() {
                     </Link>
                   </div>
                 </div>
-
-                {/* Étagère inférieure individuelle - CACHÉE SUR MOBILE */}
-                <div className="hidden md:block absolute -bottom-4 left-0 right-0 h-2 bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800 rounded-b-lg shadow-md border-t border-amber-900" style={{zIndex: 2}}></div>
-              </div>
-                ))}
-              </div>
+              ))}
             </div>
             
             {filteredProducts.length === 0 && (
@@ -1156,12 +1133,12 @@ export default function Store() {
               </div>
             )}
             
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-8 text-center shadow border border-gray-200 dark:border-gray-700 mt-12">
+            <div className="bg-white dark:bg-gray-800/60 rounded-2xl p-8 text-center shadow-sm hover:shadow-lg border border-gray-100 dark:border-gray-700/50 mt-12 transition-all duration-300">
               <p className="text-lg text-gray-700 dark:text-gray-300 mb-4" data-testid="text-contact-message">
                 {t('lookingForMore')}
               </p>
               <Link href="/contact">
-                <Button className="bg-green-600 hover:bg-green-700 text-white" data-testid="button-contact">
+                <Button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300" data-testid="button-contact">
                   {t('contactForDetails')}
                 </Button>
               </Link>
