@@ -2,9 +2,9 @@ name: Deploy to Vercel
 
 on:
   push:
-    branches: [master, main]
+    branches: [master, main, KEREN_5.5.5_CURSOR]
   pull_request:
-    branches: [master, main]
+    branches: [master, main, KEREN_5.5.5_CURSOR]
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
