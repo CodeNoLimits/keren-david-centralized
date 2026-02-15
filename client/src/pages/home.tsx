@@ -790,10 +790,10 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer className="main-footer" style={{background: 'hsl(210, 85%, 25%)', color: 'white', padding: '3rem 0 2rem'}}>
+      <footer className="main-footer bg-[hsl(210,85%,25%)] dark:bg-gray-900 text-white" style={{padding: '3rem 0 2rem'}}>
         <div className="elementor-container" style={{maxWidth: '1200px', margin: '0 auto', padding: '0 2rem'}}>
           <div style={{textAlign: 'center', paddingTop: '2rem'}}>
-            <div style={{color: 'hsl(210, 12%, 65%)', fontSize: '0.9rem'}}>
+            <div className="text-gray-400 dark:text-gray-500" style={{fontSize: '0.9rem'}}>
               <p style={{marginBottom: '0.5rem'}}>
                 {currentLanguage === 'he' ? 'כל הזכיות שמורות 2025 © קרן רבי ישראל דב אודסר זצ"ל' :
                  currentLanguage === 'en' ? 'All rights reserved 2025 © Rabbi Israel Dov Odesser Foundation' :

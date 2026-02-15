@@ -258,7 +258,7 @@ export default function Store() {
 
       <Header currentLanguage={currentLanguage} onLanguageChange={setLanguage} />
 
-      <div className="flex min-h-screen bg-gray-50">
+      <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
         {/* Desktop Sidebar */}
         <div className={`${sidebarVisible ? 'w-80' : 'w-0'} transition-all duration-200 overflow-hidden hidden lg:block`}>
           <div className="h-full bg-gradient-to-br from-[#1e40af] to-[#1e3a8a] shadow-lg border-r-4 border-[#f97316]">
@@ -1031,12 +1031,12 @@ export default function Store() {
                 >
                   <Filter className="h-5 w-5" />
                 </Button>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900" data-testid="text-page-title">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100" data-testid="text-page-title">
                   {t('storeBooks')}
                 </h1>
               </div>
-              <div className="bg-white px-4 py-2 rounded border border-gray-200" data-testid="text-results-count">
-                <span className="text-sm text-gray-600">
+              <div className="bg-white dark:bg-gray-800 px-4 py-2 rounded border border-gray-200 dark:border-gray-700" data-testid="text-results-count">
+                <span className="text-sm text-gray-600 dark:text-gray-300">
                   {t('resultsFound').replace('{count}', String(filteredProducts.length)).replace('{total}', String(allProducts.length))}
                 </span>
               </div>
@@ -1058,7 +1058,7 @@ export default function Store() {
                     {/* Carte produit - OPTIMISÉE MOBILE */}
                     <div
                       key={product.id}
-                      className="bg-white rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border-2 md:border-amber-200 border-blue-200 hover:border-[#f97316] hover:-translate-y-2 md:hover:-translate-y-3 relative md:pt-2"
+                      className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border-2 md:border-amber-200 border-blue-200 dark:border-gray-700 hover:border-[#f97316] hover:-translate-y-2 md:hover:-translate-y-3 relative md:pt-2"
                       data-testid={`card-product-${product.id}`}
                       style={{
                         transform: `perspective(1000px) rotateY(${index % 4 === 0 ? '1deg' : index % 4 === 3 ? '-1deg' : '0deg'})`,
@@ -1068,26 +1068,30 @@ export default function Store() {
                       <div className="hidden md:block absolute -bottom-3 left-0 right-0 h-3 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 rounded-b-lg shadow-lg opacity-80" style={{boxShadow: '0 3px 6px rgba(0,0,0,0.25)'}}></div>
                     
                     {/* Image */}
-                    <Link href={`/product/${product.id}`}>
+                    <Link href={`/product/${product.id}`} aria-label={getInterfaceDisplayTitle(product, currentLanguage)}>
                       {product.images && product.images.length > 0 ? (
                         <div className="relative overflow-hidden">
                           <img
                             src={convertImagePath(product.images[0])}
-                            alt={product.name}
+                            alt={getInterfaceDisplayTitle(product, currentLanguage)}
                             className="w-full h-56 sm:h-64 md:h-52 lg:h-56 object-cover cursor-pointer hover:scale-105 transition-transform duration-500"
                             data-testid={`img-product-${product.id}`}
                             loading="lazy"
                             onError={(e) => {
-                              e.currentTarget.style.display = 'none';
+                              e.currentTarget.src = '';
+                              e.currentTarget.alt = currentLanguage === 'he' ? 'תמונה לא זמינה' : 'Image unavailable';
+                              e.currentTarget.className = 'w-full h-56 sm:h-64 md:h-52 lg:h-56 bg-gray-100 dark:bg-gray-800 flex items-center justify-center';
                             }}
                           />
                           {/* Overlay gradient pour effet profondeur */}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
                         </div>
                       ) : (
-                        <div 
-                          className="w-full h-52 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center cursor-pointer hover:from-gray-200 hover:to-gray-300 transition-colors"
+                        <div
+                          className="w-full h-52 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center cursor-pointer hover:from-gray-200 hover:to-gray-300 transition-colors"
                           data-testid={`placeholder-product-${product.id}`}
+                          role="img"
+                          aria-label={currentLanguage === 'he' ? 'ספר ברסלב' : 'Breslov book'}
                         >
                           <span className="text-4xl">📖</span>
                         </div>
@@ -1098,7 +1102,7 @@ export default function Store() {
                   <div className="p-5 sm:p-4">
                     <Link href={`/product/${product.id}`}>
                       <h3
-                        className="font-bold text-xl sm:text-lg mb-3 sm:mb-2 text-gray-900 line-clamp-2 cursor-pointer hover:text-blue-600 transition-colors leading-tight"
+                        className="font-bold text-xl sm:text-lg mb-3 sm:mb-2 text-gray-900 dark:text-gray-100 line-clamp-2 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors leading-tight"
                         data-testid={`text-title-${product.id}`}
                       >
                         {getInterfaceDisplayTitle(product, currentLanguage)}
@@ -1116,7 +1120,7 @@ export default function Store() {
                     </div>
 
                     <div
-                      className="text-base sm:text-sm text-gray-600 mb-4 sm:mb-3 font-medium"
+                      className="text-base sm:text-sm text-gray-600 dark:text-gray-400 mb-4 sm:mb-3 font-medium"
                       data-testid={`text-category-${product.id}`}
                     >
                       {product.category}
@@ -1126,6 +1130,7 @@ export default function Store() {
                       <Button
                         className="w-full bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] hover:from-[#1e3a8a] hover:to-[#1e40af] text-white shadow-md hover:shadow-lg transition-all duration-300 py-6 sm:py-3 text-lg sm:text-base font-bold"
                         data-testid={`button-view-details-${product.id}`}
+                        aria-label={`${t('viewDetails')} - ${getInterfaceDisplayTitle(product, currentLanguage)}`}
                       >
                         {t('viewDetails')}
                       </Button>
@@ -1143,16 +1148,16 @@ export default function Store() {
             {filteredProducts.length === 0 && (
               <div className="text-center py-12" data-testid="text-no-results">
                 <div className="text-4xl mb-4">🔍</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('noResults')}</h3>
-                <p className="text-gray-600 mb-4">{t('tryDifferentFilters')}</p>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">{t('noResults')}</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">{t('tryDifferentFilters')}</p>
                 <Button onClick={clearAllFilters} data-testid="button-clear-filters-no-results">
                   {t('clearFilters')}
                 </Button>
               </div>
             )}
             
-            <div className="bg-white rounded-lg p-8 text-center shadow border border-gray-200 mt-12">
-              <p className="text-lg text-gray-700 mb-4" data-testid="text-contact-message">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-8 text-center shadow border border-gray-200 dark:border-gray-700 mt-12">
+              <p className="text-lg text-gray-700 dark:text-gray-300 mb-4" data-testid="text-contact-message">
                 {t('lookingForMore')}
               </p>
               <Link href="/contact">

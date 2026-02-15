@@ -18,6 +18,7 @@ const translations = {
     about: 'אודות',
     contact: 'צור קשר',
     magazine: 'המגזין',
+    lottery: 'הגרלה',
     join: 'הצטרפות',
     downloads: 'הורדות',
     subscription: 'הוראת קבע',
@@ -55,6 +56,7 @@ const translations = {
     about: 'À propos',
     contact: 'Contact',
     magazine: 'Magazine',
+    lottery: 'Loterie',
     join: 'Rejoindre',
     downloads: 'Téléchargements',
     subscription: 'Abonnement',
@@ -71,8 +73,9 @@ const translations = {
     home: 'Inicio',
     store: 'Tienda',
     about: 'Acerca de',
-    contact: 'Contacto', 
+    contact: 'Contacto',
     magazine: 'Revista',
+    lottery: 'Loteria',
     join: 'Unirse',
     downloads: 'Descargas',
     subscription: 'Suscripción',
@@ -91,6 +94,7 @@ const translations = {
     about: 'О нас',
     contact: 'Контакт',
     magazine: 'Журнал',
+    lottery: 'Лотерея',
     join: 'Присоединиться',
     downloads: 'Загрузки',
     subscription: 'Подписка',
@@ -343,6 +347,9 @@ export function Header({ currentLanguage = 'he', onLanguageChange }: HeaderProps
           </li>
           <li className={location === '/magazine' ? 'current-menu-item' : ''}>
             <Link href="/magazine" onClick={() => setMobileMenuOpen(false)} data-testid="mobile-link-magazine">{t.magazine}</Link>
+          </li>
+          <li className={location === '/lottery' ? 'current-menu-item' : ''}>
+            <Link href="/lottery" onClick={() => setMobileMenuOpen(false)} data-testid="mobile-link-lottery" style={{color: '#f97316', fontWeight: 'bold'}}>{t.lottery || (currentLanguage === 'he' ? 'הגרלה' : 'Lottery')}</Link>
           </li>
           <li className={location === '/join' ? 'current-menu-item' : ''}>
             <Link href="/join" onClick={() => setMobileMenuOpen(false)} data-testid="mobile-link-join">{t.join}</Link>

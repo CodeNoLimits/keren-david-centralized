@@ -31,9 +31,17 @@ interface ShippingAddress {
   phone: string;
 }
 
-const CheckoutForm = ({ clientSecret, orderSummary }: { 
-  clientSecret: string; 
-  orderSummary: any;
+interface OrderSummary {
+  subtotal: number;
+  discount: number;
+  vatAmount: number;
+  shippingAmount: number;
+  totalAmount: number;
+}
+
+const CheckoutForm = ({ clientSecret, orderSummary }: {
+  clientSecret: string;
+  orderSummary: OrderSummary;
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -169,7 +177,7 @@ export default function Checkout() {
   });
   const [email, setEmail] = useState('');
   const [clientSecret, setClientSecret] = useState<string | null>(null);
-  const [orderSummary, setOrderSummary] = useState<any>(null);
+  const [orderSummary, setOrderSummary] = useState<OrderSummary | null>(null);
   const { toast } = useToast();
   
   // Redirect if cart is empty
@@ -317,23 +325,32 @@ export default function Checkout() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="city">עיר *</Label>
-                      <Input 
+                      <Input
                         id="city"
                         value={shippingAddress.city}
                         onChange={(e) => setShippingAddress(prev => ({...prev, city: e.target.value}))}
-                        required 
+                        required
                         data-testid="input-city"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="postalCode">מיקוד</Label>
-                      <Input 
-                        id="postalCode"
-                        value={shippingAddress.postalCode}
-                        onChange={(e) => setShippingAddress(prev => ({...prev, postalCode: e.target.value}))}
-                        data-testid="input-postal-code"
+                      <Label htmlFor="region">אזור</Label>
+                      <Input
+                        id="region"
+                        value={shippingAddress.region}
+                        onChange={(e) => setShippingAddress(prev => ({...prev, region: e.target.value}))}
+                        data-testid="input-region"
                       />
                     </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="postalCode">מיקוד</Label>
+                    <Input
+                      id="postalCode"
+                      value={shippingAddress.postalCode}
+                      onChange={(e) => setShippingAddress(prev => ({...prev, postalCode: e.target.value}))}
+                      data-testid="input-postal-code"
+                    />
                   </div>
                   
                   <div className="space-y-2">

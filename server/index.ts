@@ -43,7 +43,7 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  app.use((err: Error & { status?: number; statusCode?: number }, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
@@ -87,7 +87,7 @@ app.use((req, res, next) => {
   });
 
   // Handle server errors
-  server.on('error', (error: any) => {
+  server.on('error', (error: NodeJS.ErrnoException) => {
     if (error.code === 'EADDRINUSE') {
       log(`❌ Port ${port} is already in use`);
       process.exit(1);
